@@ -21,7 +21,7 @@ namespace Segfy.Application.Services.Sinistro
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
 
-        public async Task<SinistroDTO> AbrirSinistroAsync(CreateSinistroDTO sinistro)
+        public async Task<SinistroDTO> CreateSinistroAsync(CreateSinistroDTO sinistro)
         {
             var apolice = await _apoliceRepository.GetApoliceByIdAsync(sinistro.ApoliceId);
             
@@ -41,7 +41,7 @@ namespace Segfy.Application.Services.Sinistro
             return _mapper.Map<SinistroDTO>(newSinistro);
         }
 
-        public async Task AtualizarStatusAsync(
+        public async Task UpdateStatusAsync(
         int sinistroId,
         StatusSinistro novoStatus,
         string? motivoNegativa,
@@ -55,16 +55,16 @@ namespace Segfy.Application.Services.Sinistro
             switch (novoStatus)
             {
                 case StatusSinistro.EM_ANALISE:
-                    sinistro.EnviarParaAnalise();
+                    sinistro.SendForAnalisys();
                     break;
                 case StatusSinistro.APROVADO:
-                    sinistro.Aprovar();
+                    sinistro.Aprove();
                     break;
                 case StatusSinistro.ENCERRADO:
-                    sinistro.Encerrar(valorAprovado);
+                    sinistro.Close(valorAprovado);
                     break;
                 case StatusSinistro.NEGADO:
-                    sinistro.Negar(motivoNegativa);
+                    sinistro.Deny(motivoNegativa);
                     break;
                 default:
                     throw new DomainException("Status inválido.");

@@ -11,5 +11,6 @@ namespace Segfy.Application.Interfaces.Apolice
         Task UpdateApoliceAsync(DomainApolice apolice);
         Task DeleteApoliceAsync(int id);
         Task<DomainApolice?> GetApoliceByIdAsyncTracked(int id);
+        Task<bool> CheckForDuplicateNumeroApolice(string numeroApolice);
     }
 }

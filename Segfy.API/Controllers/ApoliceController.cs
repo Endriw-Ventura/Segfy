@@ -35,7 +35,7 @@ namespace Segfy.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateApoliceDTO request)
         {
-            var result = await _apoliceService.CriarApoliceAsync(request);
+            var result = await _apoliceService.CreateApoliceAsync(request);
             return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
         }
 
@@ -44,14 +44,14 @@ namespace Segfy.API.Controllers
             int id,
             [FromBody] UpdateStatusApoliceDTO request)
         {
-            await _apoliceService.AtualizarStatusAsync(id, request.Status);
+            await _apoliceService.UpdateStatusAsync(id, request.Status);
             return NoContent();
         }
 
         [HttpGet("{id:int}/sinistros")]
         public async Task<IActionResult> GetApoliceWithSinistros(int id)
         {
-            var result = await _apoliceService.GetApoliceComSinistrosAsync(id);
+            var result = await _apoliceService.GetApoliceWithSinistrosAsync(id);
             if (result is null)
                 return NotFound();
 

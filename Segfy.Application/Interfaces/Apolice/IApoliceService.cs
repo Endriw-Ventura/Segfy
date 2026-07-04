@@ -12,12 +12,13 @@ namespace Segfy.Application.Interfaces.Apolice
 {
     public interface IApoliceService
     {
-        Task<ApoliceDTO> CriarApoliceAsync(CreateApoliceDTO request);
-        Task AtualizarStatusAsync(
+        Task<ApoliceDTO> CreateApoliceAsync(CreateApoliceDTO request);
+        Task UpdateStatusAsync(
        int apoliceId,
        StatusApolice novoStatus);
         Task<IEnumerable<ApoliceDTO>> GetAllAsync(StatusApolice? status, DateTime? data, int page, int pageSize);
         Task<ApoliceDTO?> GetApoliceByIdAsync(int id);
-        Task<ApoliceComSinistrosDTO?> GetApoliceComSinistrosAsync(int id);
+        Task<ApoliceComSinistrosDTO?> GetApoliceWithSinistrosAsync(int id);
+        Task<bool> CheckForDuplicateNumeroApolice(string numeroApolice);
     }
 }

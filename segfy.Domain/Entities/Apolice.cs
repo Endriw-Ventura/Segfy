@@ -19,17 +19,17 @@ namespace segfy.Domain.Entities
             return Status == StatusApolice.ATIVA;
         }
 
-        public void Cancelar()
+        public void Cancel()
         {
             Status = StatusApolice.CANCELADA;
         }
 
-        public void Expirar()
+        public void Expire()
         {
             Status = StatusApolice.EXPIRADA;
         }
 
-        public void Ativar()
+        public void Activate()
         {
             Status = StatusApolice.ATIVA;
         }

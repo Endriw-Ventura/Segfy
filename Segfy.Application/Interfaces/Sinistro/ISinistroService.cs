@@ -12,8 +12,8 @@ namespace Segfy.Application.Interfaces.Sinistro
 {
     public interface ISinistroService
     {
-        Task<SinistroDTO> AbrirSinistroAsync(CreateSinistroDTO request);
-        Task AtualizarStatusAsync(
+        Task<SinistroDTO> CreateSinistroAsync(CreateSinistroDTO request);
+        Task UpdateStatusAsync(
        int sinistroId,
        StatusSinistro novoStatus,
        string? motivoNegativa,

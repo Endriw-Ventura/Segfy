@@ -53,7 +53,7 @@ public class SinistrosController(
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateSinistroDTO request)
     {
-        var sinistro = await _sinistroService.AbrirSinistroAsync(request);
+        var sinistro = await _sinistroService.CreateSinistroAsync(request);
 
         return CreatedAtAction(
             nameof(GetById),
@@ -66,7 +66,7 @@ public class SinistrosController(
         int id,
         [FromBody] UpdateStatusSinistroDTO request)
     {
-        await _sinistroService.AtualizarStatusAsync(
+        await _sinistroService.UpdateStatusAsync(
             id,
             request.Status,
             request.MotivoNegativa,

@@ -18,7 +18,8 @@ namespace Segfy.Application.Services.Apolice
         private readonly IApoliceRepository _apoliceRepository = apoliceRepository;
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
-        public async Task AtualizarStatusAsync(int apoliceId, StatusApolice novoStatus)
+        
+        public async Task UpdateStatusAsync(int apoliceId, StatusApolice novoStatus)
         {
             var apolice = await _apoliceRepository.GetApoliceByIdAsyncTracked(apoliceId);
             if (apolice is null)
@@ -27,13 +28,13 @@ namespace Segfy.Application.Services.Apolice
             switch (novoStatus)
             {
                 case StatusApolice.ATIVA:
-                    apolice.Ativar();
+                    apolice.Activate();
                     break;
                 case StatusApolice.EXPIRADA:
-                    apolice.Expirar();
+                    apolice.Expire();
                     break;
                 case StatusApolice.CANCELADA:
-                    apolice.Cancelar();
+                    apolice.Cancel();
                     break;
                 default:
                     throw new DomainException("Status inválido.");
@@ -41,7 +42,7 @@ namespace Segfy.Application.Services.Apolice
             await _unitOfWork.SaveChangesAsync();
         }
 
-        public async Task<ApoliceDTO> CriarApoliceAsync(CreateApoliceDTO request)
+        public async Task<ApoliceDTO> CreateApoliceAsync(CreateApoliceDTO request)
         {
             var newApolice = _mapper.Map<DomainApolice>(request);
             await _apoliceRepository.AddApoliceAsync(newApolice);
@@ -68,10 +69,15 @@ namespace Segfy.Application.Services.Apolice
             return _mapper.Map<ApoliceDTO>(apolice);
         }
 
-        public async Task<ApoliceComSinistrosDTO?> GetApoliceComSinistrosAsync(int id)
+        public async Task<ApoliceComSinistrosDTO?> GetApoliceWithSinistrosAsync(int id)
         {
             var apolice = await _apoliceRepository.GetByIdWithSinistrosAsync(id);
             return _mapper.Map<ApoliceComSinistrosDTO>(apolice);
+        }
+
+        public async Task<bool> CheckForDuplicateNumeroApolice(string numeroApolice)
+        {
+            return await _apoliceRepository.CheckForDuplicateNumeroApolice(numeroApolice);
         }
     }
 }

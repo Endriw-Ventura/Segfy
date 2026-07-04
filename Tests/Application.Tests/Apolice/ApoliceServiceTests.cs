@@ -51,7 +51,7 @@ public class ApoliceServiceTests
         var service = CreateService();
 
         // Act
-        var result = await service.CriarApoliceAsync(request);
+        var result = await service.CreateApoliceAsync(request);
 
         // Assert
         result.Should().NotBeNull();
@@ -79,7 +79,7 @@ public class ApoliceServiceTests
         var service = CreateService();
 
         // Act
-        await service.AtualizarStatusAsync(apolice.Id, StatusApolice.ATIVA);
+        await service.UpdateStatusAsync(apolice.Id, StatusApolice.ATIVA);
 
         // Assert
         apolice.Status.Should().Be(StatusApolice.ATIVA);
@@ -102,7 +102,7 @@ public class ApoliceServiceTests
         var service = CreateService();
 
         // Act
-        await service.AtualizarStatusAsync(apolice.Id, StatusApolice.CANCELADA);
+        await service.UpdateStatusAsync(apolice.Id, StatusApolice.CANCELADA);
 
         // Assert
         apolice.Status.Should().Be(StatusApolice.CANCELADA);
@@ -125,7 +125,7 @@ public class ApoliceServiceTests
         var service = CreateService();
 
         // Act
-        await service.AtualizarStatusAsync(apolice.Id, StatusApolice.EXPIRADA);
+        await service.UpdateStatusAsync(apolice.Id, StatusApolice.EXPIRADA);
 
         // Assert
         apolice.Status.Should().Be(StatusApolice.EXPIRADA);
@@ -147,7 +147,7 @@ public class ApoliceServiceTests
 
         // Act
         Func<Task> act = async () =>
-            await service.AtualizarStatusAsync(99, StatusApolice.ATIVA);
+            await service.UpdateStatusAsync(99, StatusApolice.ATIVA);
 
         // Assert
         await act.Should()
@@ -276,7 +276,7 @@ public class ApoliceServiceTests
         var service = CreateService();
 
         // Act
-        var result = await service.GetApoliceComSinistrosAsync(1);
+        var result = await service.GetApoliceWithSinistrosAsync(1);
 
         // Assert
         result.Should().BeNull();
@@ -300,7 +300,7 @@ public class ApoliceServiceTests
         var service = CreateService();
 
         // Act
-        var result = await service.GetApoliceComSinistrosAsync(apolice.Id);
+        var result = await service.GetApoliceWithSinistrosAsync(apolice.Id);
 
         // Assert
         result.Should().NotBeNull();

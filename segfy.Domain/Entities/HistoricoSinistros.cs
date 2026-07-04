@@ -11,6 +11,7 @@ namespace segfy.Domain.Entities
     {
         public int Id { get; private set; }
         public int SinistroId { get; private set; }
+        public Sinistro Sinistro { get; private set; }
         public StatusSinistro? StatusAnterior { get; private set; }
         public StatusSinistro StatusNovo { get; private set; }
         public string? Observacao { get; private set; }

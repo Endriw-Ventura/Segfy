@@ -22,7 +22,7 @@ namespace segfy.Domain.Entities
         public Apolice Apolice { get; private set; }
 
         private readonly List<HistoricoSinistros> _historicos = [];
-        public IReadOnlyCollection<HistoricoSinistros> Historicos => _historicos.AsReadOnly();
+        public  ICollection<HistoricoSinistros> Historicos => _historicos.AsReadOnly();
 
 
         public Sinistro(string numeroSinistro, DateTime dataSinistro, string descricao, decimal? valor, Apolice apolice)
@@ -73,7 +73,7 @@ namespace segfy.Domain.Entities
                 observacao));
         }
 
-        public void EnviarParaAnalise()
+        public void SendForAnalisys()
         {
             AlterarStatus(StatusSinistro.EM_ANALISE);
         }
@@ -89,12 +89,12 @@ namespace segfy.Domain.Entities
             AdicionarHistorico(statusAnterior, novoStatus, null);
         }
 
-        public void Aprovar()
+        public void Aprove()
         {
             AlterarStatus(StatusSinistro.APROVADO);
         }
 
-        public void Encerrar(decimal? valorAprovado)
+        public void Close(decimal? valorAprovado)
         {
             if (valorAprovado <= 0)
                 throw new DomainException("O valor aprovado é obrigatório para encerrar o sinistro.");
@@ -104,7 +104,7 @@ namespace segfy.Domain.Entities
             AlterarStatus(StatusSinistro.ENCERRADO);
         }
 
-        public void Negar(string? motivo)
+        public void Deny(string? motivo)
         {
             if (string.IsNullOrWhiteSpace(motivo))
                 throw new DomainException("O motivo da negativa é obrigatório para negativar o sinistro.");

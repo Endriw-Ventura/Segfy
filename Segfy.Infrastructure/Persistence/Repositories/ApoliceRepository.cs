@@ -15,6 +15,11 @@ namespace Segfy.Infrastructure.Persistence.Repositories
             await _context.Apolices.AddAsync(apolice);
         }
 
+        public async Task<bool> CheckForDuplicateNumeroApolice(string numeroApolice)
+        {
+            return await _context.Apolices.AnyAsync(a => a.NumeroApolice == numeroApolice);
+        }
+
         public async Task DeleteApoliceAsync(int id)
         {
             await _context.Apolices.Where(a => a.Id == id).ExecuteDeleteAsync();
@@ -67,5 +72,7 @@ namespace Segfy.Infrastructure.Persistence.Repositories
             _context.Apolices.Update(newApolice);
             return Task.CompletedTask;
         }
+
+
     }
 }

@@ -57,7 +57,7 @@ public class SinistroServiceTests
 
         var service = CreateService();
 
-        var result = await service.AbrirSinistroAsync(dto);
+        var result = await service.CreateSinistroAsync(dto);
 
         result.Should().NotBeNull();
         result.Id.Should().Be(1);
@@ -89,7 +89,7 @@ public class SinistroServiceTests
 
         var service = CreateService();
 
-        Func<Task> act = async () => await service.AbrirSinistroAsync(dto);
+        Func<Task> act = async () => await service.CreateSinistroAsync(dto);
 
         await act.Should()
             .ThrowAsync<DomainException>()
@@ -115,7 +115,7 @@ public class SinistroServiceTests
 
         var service = CreateService();
 
-        await service.AtualizarStatusAsync(
+        await service.UpdateStatusAsync(
             sinistro.Id,
             StatusSinistro.EM_ANALISE,
             null,
@@ -132,7 +132,7 @@ public class SinistroServiceTests
     public async Task AtualizarStatusAsync_DeveAprovarSinistro()
     {
         var sinistro = CriarSinistroValido();
-        sinistro.EnviarParaAnalise();
+        sinistro.SendForAnalisys();
 
         _sinistroRepository
             .Setup(x => x.GetSinistroByIdAsyncTracked(sinistro.Id))
@@ -140,7 +140,7 @@ public class SinistroServiceTests
 
         var service = CreateService();
 
-        await service.AtualizarStatusAsync(
+        await service.UpdateStatusAsync(
             sinistro.Id,
             StatusSinistro.APROVADO,
             null,
@@ -157,8 +157,8 @@ public class SinistroServiceTests
     public async Task AtualizarStatusAsync_DeveEncerrarSinistro_QuandoValorAprovadoInformado()
     {
         var sinistro = CriarSinistroValido();
-        sinistro.EnviarParaAnalise();
-        sinistro.Aprovar();
+        sinistro.SendForAnalisys();
+        sinistro.Aprove();
 
         _sinistroRepository
             .Setup(x => x.GetSinistroByIdAsyncTracked(sinistro.Id))
@@ -166,7 +166,7 @@ public class SinistroServiceTests
 
         var service = CreateService();
 
-        await service.AtualizarStatusAsync(
+        await service.UpdateStatusAsync(
             sinistro.Id,
             StatusSinistro.ENCERRADO,
             null,
@@ -184,8 +184,8 @@ public class SinistroServiceTests
     public async Task AtualizarStatusAsync_NaoDeveEncerrarSinistro_QuandoValorAprovadoNaoInformado()
     {
         var sinistro = CriarSinistroValido();
-        sinistro.EnviarParaAnalise();
-        sinistro.Aprovar();
+        sinistro.SendForAnalisys();
+        sinistro.Aprove();
 
         _sinistroRepository
             .Setup(x => x.GetSinistroByIdAsyncTracked(sinistro.Id))
@@ -193,7 +193,7 @@ public class SinistroServiceTests
 
         var service = CreateService();
 
-        Func<Task> act = async () => await service.AtualizarStatusAsync(
+        Func<Task> act = async () => await service.UpdateStatusAsync(
             sinistro.Id,
             StatusSinistro.ENCERRADO,
             null,
@@ -210,7 +210,7 @@ public class SinistroServiceTests
     public async Task AtualizarStatusAsync_DeveNegarSinistro_QuandoMotivoInformado()
     {
         var sinistro = CriarSinistroValido();
-        sinistro.EnviarParaAnalise();
+        sinistro.SendForAnalisys();
 
         _sinistroRepository
             .Setup(x => x.GetSinistroByIdAsyncTracked(sinistro.Id))
@@ -218,7 +218,7 @@ public class SinistroServiceTests
 
         var service = CreateService();
 
-        await service.AtualizarStatusAsync(
+        await service.UpdateStatusAsync(
             sinistro.Id,
             StatusSinistro.NEGADO,
             "Documentação insuficiente",
@@ -236,7 +236,7 @@ public class SinistroServiceTests
     public async Task AtualizarStatusAsync_NaoDeveNegarSinistro_QuandoMotivoNaoInformado()
     {
         var sinistro = CriarSinistroValido();
-        sinistro.EnviarParaAnalise();
+        sinistro.SendForAnalisys();
 
         _sinistroRepository
             .Setup(x => x.GetSinistroByIdAsyncTracked(sinistro.Id))
@@ -244,7 +244,7 @@ public class SinistroServiceTests
 
         var service = CreateService();
 
-        Func<Task> act = async () => await service.AtualizarStatusAsync(
+        Func<Task> act = async () => await service.UpdateStatusAsync(
             sinistro.Id,
             StatusSinistro.NEGADO,
             null,
@@ -266,7 +266,7 @@ public class SinistroServiceTests
 
         var service = CreateService();
 
-        Func<Task> act = async () => await service.AtualizarStatusAsync(
+        Func<Task> act = async () => await service.UpdateStatusAsync(
             99,
             StatusSinistro.EM_ANALISE,
             null,
