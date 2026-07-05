@@ -21,7 +21,8 @@ namespace Segfy.Infrastructure.Persistence.Migrations
                     NomeSegurado = table.Column<string>(type: "TEXT", nullable: false),
                     DataInicio = table.Column<DateTime>(type: "TEXT", nullable: false),
                     DataFim = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    Status = table.Column<int>(type: "INTEGER", nullable: false)
+                    Status = table.Column<int>(type: "INTEGER", nullable: false),
+                    ramo = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {

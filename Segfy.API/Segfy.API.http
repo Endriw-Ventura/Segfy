@@ -1,6 +1,97 @@
 @Segfy.API_HostAddress = http://localhost:5264
 
-GET {{Segfy.API_HostAddress}}/weatherforecast/
+### Criar apólice
+POST {{Segfy.API_HostAddress}}/api/apolicesF
+Content-Type: application/json
+
+{
+  "numeroApolice": "AP-001",
+  "nomeSegurado": "João Silva",
+  "dataInicio": "2026-01-01",
+  "dataFim": "2026-12-31",
+  "ramo": "AUTOMOVEL"
+}
+
+### Listar apólices
+GET {{Segfy.API_HostAddress}}/api/apolices?page=1&pageSize=10
 Accept: application/json
 
-###
+### Buscar apólice por Id
+GET {{Segfy.API_HostAddress}}/api/apolices/1
+Accept: application/json
+
+### Buscar apólice com sinistros
+GET {{Segfy.API_HostAddress}}/api/apolices/1/sinistros
+Accept: application/json
+
+### Atualizar status da apólice
+PATCH {{Segfy.API_HostAddress}}/api/apolices/1/status
+Content-Type: application/json
+
+{
+  "status": "ATIVA"
+}
+
+### Criar sinistro
+POST {{Segfy.API_HostAddress}}/api/sinistros
+Content-Type: application/json
+
+{
+  "apoliceId": 1,
+  "numeroSinistro": "SIN-001",
+  "dataSinistro": "2026-07-05",
+  "descricao": "Colisão traseira",
+  "valorSolicitado": 5000
+}
+
+### Listar sinistros
+GET {{Segfy.API_HostAddress}}/api/sinistros?page=1&pageSize=10
+Accept: application/json
+
+### Buscar sinistro por Id
+GET {{Segfy.API_HostAddress}}/api/sinistros/1
+Accept: application/json
+
+### Buscar histórico do sinistro
+GET {{Segfy.API_HostAddress}}/api/sinistros/1/historico
+Accept: application/json
+
+### Atualizar status para Em Análise
+PATCH {{Segfy.API_HostAddress}}/api/sinistros/1/status
+Content-Type: application/json
+
+{
+  "status": "EM_ANALISE",
+  "motivoNegativa": null,
+  "valorAprovado": null
+}
+
+### Atualizar status para Aprovado
+PATCH {{Segfy.API_HostAddress}}/api/sinistros/1/status
+Content-Type: application/json
+
+{
+  "status": "APROVADO",
+  "motivoNegativa": null,
+  "valorAprovado": null
+}
+
+### Atualizar status para Encerrado
+PATCH {{Segfy.API_HostAddress}}/api/sinistros/1/status
+Content-Type: application/json
+
+{
+  "status": "ENCERRADO",
+  "motivoNegativa": null,
+  "valorAprovado": 4500
+}
+
+### Atualizar status para Negado
+PATCH {{Segfy.API_HostAddress}}/api/sinistros/1/status
+Content-Type: application/json
+
+{
+  "status": "NEGADO",
+  "motivoNegativa": "Documentação insuficiente",
+  "valorAprovado": null
+}

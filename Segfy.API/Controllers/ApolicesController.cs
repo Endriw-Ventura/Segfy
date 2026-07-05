@@ -11,7 +11,7 @@ namespace Segfy.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ApoliceController(
+    public class ApolicesController(
         IGetApoliceWithSinistrosUseCase getApoliceWithSinistrosUseCase,
         IGetAllApoliciesUseCase getAllApoliciesUseCase,
         IGetApoliceByIdUseCase getApoliceByIdUseCase,

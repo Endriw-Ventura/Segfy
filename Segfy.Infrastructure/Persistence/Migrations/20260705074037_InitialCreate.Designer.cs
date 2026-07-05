@@ -11,7 +11,7 @@ using Segfy.Infrastructure.Persistence.Context;
 namespace Segfy.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20260705053154_InitialCreate")]
+    [Migration("20260705074037_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -42,6 +42,9 @@ namespace Segfy.Infrastructure.Persistence.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Status")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ramo")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
