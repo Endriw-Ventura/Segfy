@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Segfy.API.Middlewares;
 using Segfy.Application.DependencyInjection;
 using Segfy.Infrastructure.DependencyInjection;
 using Segfy.Infrastructure.Persistence.Context;
@@ -36,7 +37,7 @@ if (app.Environment.IsDevelopment())
         throw;
     }
 }
-
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
