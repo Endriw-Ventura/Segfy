@@ -8,10 +8,10 @@ namespace segfy.Domain.Enums
 {
     public enum StatusSinistro
     {
-        ABERTO,
-        EM_ANALISE,
-        APROVADO,
-        ENCERRADO,
-        NEGADO
+        ABERTO = 0,
+        EM_ANALISE = 1,
+        APROVADO = 2,
+        NEGADO = 3,
+        ENCERRADO = 4
     }
 }

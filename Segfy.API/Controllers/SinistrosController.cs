@@ -88,3 +88,5 @@ public class SinistrosController(
         return NoContent();
     }
 }
+
+//Alterar GitIgnore para pegar os arquivos do banco e migrations

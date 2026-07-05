@@ -10,6 +10,7 @@ namespace Segfy.Application.Mappings.Apolice
         {
             CreateMap<DomainApolice, ApoliceDTO>();
             CreateMap<DomainApolice, CreateApoliceDTO>();
+            CreateMap<DomainApolice, ApoliceComSinistrosDTO>();
         }
     }
 }

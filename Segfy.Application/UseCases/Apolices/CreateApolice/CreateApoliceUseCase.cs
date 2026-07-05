@@ -18,7 +18,13 @@ namespace Segfy.Application.UseCases.Apolices.Create
             if (await _apoliceRepository.CheckForDuplicateNumeroApolice(request.NumeroApolice))
                 throw new DomainException("Já existe uma apólice com esse número.");
 
-            var newApolice = _mapper.Map<Apolice>(request);
+            var newApolice = new Apolice(
+                request.NumeroApolice,
+                request.NomeSegurado,
+                request.DataInicio,
+                request.DataFim,
+                request.Ramo);
+
             await _apoliceRepository.AddApoliceAsync(newApolice);
             await _unitOfWork.SaveChangesAsync();
             return _mapper.Map<ApoliceDTO>(newApolice);

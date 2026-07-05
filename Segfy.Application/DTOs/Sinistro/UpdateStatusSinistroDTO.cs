@@ -9,8 +9,8 @@ namespace Segfy.Application.DTOs.Sinistro
 {
     public class UpdateStatusSinistroDTO
     {
-        public StatusSinistro Status;
-        public string? MotivoNegativa;
-        public decimal? ValorAprovado;
+        public StatusSinistro Status { get; set; }
+        public string? MotivoNegativa { get; set; }
+        public decimal? ValorAprovado { get; set; }
     }
 }

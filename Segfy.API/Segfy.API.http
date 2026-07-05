@@ -8,7 +8,7 @@ Content-Type: application/json
     "nomeSegurado": "João Silva",
     "dataInicio": "2026-01-01",
     "dataFim": "2026-12-31",
-    "ramo": "AUTOMOVEL"
+    "ramo": 0
 }
 
 ### Listar apólices
@@ -60,9 +60,9 @@ PATCH {{Segfy.API_HostAddress}}/api/sinistros/1/status
 Content-Type: application/json
 
 {
-  "status": "EM_ANALISE",
-  "motivoNegativa": null,
-  "valorAprovado": null
+  "status": 1,
+  "motivoNegativa": "teste",
+  "valorAprovado": "1500"
 }
 
 ### Atualizar status para Aprovado

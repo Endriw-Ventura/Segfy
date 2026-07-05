@@ -19,7 +19,7 @@ namespace Segfy.Application.UseCases.Sinistros.CreateSinistro
             if (await _apoliceRepository.CheckForDuplicateNumeroApolice(sinistro.NumeroSinistro))
                 throw new DomainException("Já existe uma apólice com esse número.");
 
-            var apolice = await _apoliceRepository.GetApoliceByIdAsync(sinistro.ApoliceId);
+            var apolice = await _apoliceRepository.GetApoliceByIdAsyncTracked(sinistro.ApoliceId);
 
             if (apolice is null)
                 throw new DomainException("Apolice não encontrada.");
