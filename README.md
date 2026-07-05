@@ -8,17 +8,6 @@ A aplicação foi desenvolvida seguindo os princípios da **Clean Architecture**
 
 ---
 
-## Como executar
-
-1. Clone o repositório.
-2. Execute:
-
-   dotnet run --project Segfy.API
-
-3. A API aplicará automaticamente as migrations em ambiente de desenvolvimento e criará o banco SQLite. (Caso haja algum erro durante este processo, ficará nos logs)
-
----
-
 # Arquitetura
 
 O projeto está organizado da seguinte forma:
@@ -200,6 +189,13 @@ Por se tratar de um teste técnico, optei por não implementar testes de integra
 ---
 
 # Como executar
+
+1. Clone o repositório.
+2. Execute:
+
+   dotnet run --project Segfy.API
+
+3. A API aplicará automaticamente as migrations em ambiente de desenvolvimento e criará o banco SQLite. (Caso haja algum erro durante este processo, ficará nos logs)
 
 ## Pré-requisitos
 
