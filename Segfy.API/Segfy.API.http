@@ -1,15 +1,14 @@
 @Segfy.API_HostAddress = http://localhost:5264
 
 ### Criar apólice
-POST {{Segfy.API_HostAddress}}/api/apolicesF
+POST {{Segfy.API_HostAddress}}/api/apolices
 Content-Type: application/json
-
 {
-  "numeroApolice": "AP-001",
-  "nomeSegurado": "João Silva",
-  "dataInicio": "2026-01-01",
-  "dataFim": "2026-12-31",
-  "ramo": "AUTOMOVEL"
+    "numeroApolice": "AP-001",
+    "nomeSegurado": "João Silva",
+    "dataInicio": "2026-01-01",
+    "dataFim": "2026-12-31",
+    "ramo": "AUTOMOVEL"
 }
 
 ### Listar apólices
