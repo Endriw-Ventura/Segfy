@@ -1,16 +1,29 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using segfy.Domain.Enums;
 using Segfy.Application.DTOs.Sinistro;
-using Segfy.Application.Interfaces.Sinistro;
+using Segfy.Application.UseCases.Sinistros.CreateSinistro;
+using Segfy.Application.UseCases.Sinistros.GetAllSinistros;
+using Segfy.Application.UseCases.Sinistros.GetHistoricoSinistro;
+using Segfy.Application.UseCases.Sinistros.GetSinistroById;
+using Segfy.Application.UseCases.Sinistros.UpdateSinistroStatus;
 
 namespace Segfy.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
 public class SinistrosController(
-    ISinistroService sinistroService) : ControllerBase
+    IGetAllSinistrosUseCase getAllSinistrosUseCase,
+    IGetSinistroByIdUseCase getSinistroByIdUseCase,
+    IGetHistoricoSinistroUseCase getHistoricoSinistroUseCase,
+    ICreateSinistroUseCase createSinistroUseCase,
+    IUpdateSinistroStatusUseCase updateSinistroStatusUseCase
+    ) : ControllerBase
 {
-    private readonly ISinistroService _sinistroService = sinistroService;
+    private readonly IGetAllSinistrosUseCase _getAllSinistroseCase = getAllSinistrosUseCase;
+    private readonly IGetSinistroByIdUseCase _getSinistroByIdUseCase = getSinistroByIdUseCase;
+    private readonly IGetHistoricoSinistroUseCase _getHistoricoSinistroUseCase = getHistoricoSinistroUseCase;
+    private readonly ICreateSinistroUseCase _createSinistroUseCase = createSinistroUseCase;
+    private readonly IUpdateSinistroStatusUseCase _updateSinistroStatusUseCase = updateSinistroStatusUseCase;
 
     [HttpGet]
     public async Task<IActionResult> GetAll(
@@ -19,7 +32,7 @@ public class SinistrosController(
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 10)
     {
-        var sinistros = await _sinistroService.GetAllAsync(
+        var sinistros = await _getAllSinistroseCase.ExecuteAsync(
             status,
             data,
             page,
@@ -31,7 +44,7 @@ public class SinistrosController(
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById(int id)
     {
-        var sinistro = await _sinistroService.GetSinistroByIdAsync(id);
+        var sinistro = await _getSinistroByIdUseCase.ExecuteAsync(id);
 
         if (sinistro is null)
             return NotFound();
@@ -42,7 +55,7 @@ public class SinistrosController(
     [HttpGet("{id:int}/historico")]
     public async Task<IActionResult> GetHistorico(int id)
     {
-        var historico = await _sinistroService.GetHistoricoSinistro(id);
+        var historico = await _getHistoricoSinistroUseCase.ExecuteAsync(id);
 
         if (historico is null || !historico.Any())
             return NotFound();
@@ -53,7 +66,7 @@ public class SinistrosController(
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateSinistroDTO request)
     {
-        var sinistro = await _sinistroService.CreateSinistroAsync(request);
+        var sinistro = await _createSinistroUseCase.ExecuteAsync(request);
 
         return CreatedAtAction(
             nameof(GetById),
@@ -66,7 +79,7 @@ public class SinistrosController(
         int id,
         [FromBody] UpdateStatusSinistroDTO request)
     {
-        await _sinistroService.UpdateStatusAsync(
+        await _updateSinistroStatusUseCase.ExecuteAsync(
             id,
             request.Status,
             request.MotivoNegativa,

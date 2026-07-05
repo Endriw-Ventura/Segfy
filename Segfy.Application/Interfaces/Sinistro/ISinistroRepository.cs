@@ -12,5 +12,6 @@ namespace Segfy.Application.Interfaces.Sinistro
         Task<IEnumerable<DomainSinistro>> GetAllAsync(StatusSinistro? status, DateTime? data, int page, int pageSize);
         Task AddSinistroAsync(DomainSinistro sinistro);
         Task<IEnumerable<HistoricoSinistros>> GetHistoricoSinistro(int id);
+        Task<bool> CheckForDuplicateNumeroSinistroAsync(string numeroSinistro);
     }
 }

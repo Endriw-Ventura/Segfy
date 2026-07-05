@@ -58,5 +58,10 @@ namespace Segfy.Infrastructure.Persistence.Repositories
                 .OrderByDescending(h => h.CriadoEm)
                 .ToListAsync();
         }
+
+        public async Task<bool> CheckForDuplicateNumeroSinistroAsync(string numeroSinistro)
+        {
+            return await _context.Sinistros.AnyAsync(a => a.NumeroSinistro == numeroSinistro);
+        }
     }
 }
