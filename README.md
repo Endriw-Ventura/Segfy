@@ -24,7 +24,7 @@ Segfy.Application
 ├── DTOs
 ├── Interfaces
 ├── Mappings
-├── Services
+├── UseCases
 └── DependencyInjection
 
 Segfy.Domain
@@ -52,28 +52,46 @@ Para este projeto optei por utilizar:
 
 * Clean Architecture
 * Repository Pattern
-* Service Layer
+* Use Cases
 * Unit of Work
 * AutoMapper
 * Entity Framework Core
 
-A camada de **Application** é responsável por orquestrar os casos de uso da aplicação, enquanto a camada de **Domain** concentra as regras de negócio e o comportamento das entidades.
+A camada **Application** concentra os casos de uso da aplicação (Use Cases), responsáveis por orquestrar as operações do sistema.
+
+A camada **Domain** contém as entidades, enums e regras de negócio, garantindo que a lógica permaneça independente da infraestrutura.
 
 Os **Repositories** possuem responsabilidade exclusiva de acesso aos dados, sem conter regras de negócio ou mapeamentos para DTOs.
 
-Os **Services** executam a orquestração dos fluxos da aplicação, validando regras de negócio, utilizando os repositórios e coordenando as operações através do Unit of Work.
+Cada **Use Case** possui responsabilidade única, tornando o código mais organizado, testável e aderente ao princípio **SRP (Single Responsibility Principle)**.
 
 ---
-Embora este projeto utilize Repository Pattern com Services, sua estrutura foi preparada para evoluir facilmente para abordagens mais robustas, como:
 
-* Use Cases (Application Use Cases)
+# Evolução da arquitetura
+
+Inicialmente, o projeto foi desenvolvido utilizando **Repository Pattern + Services** para simplificar a implementação e manter uma separação clara entre responsabilidades.
+
+Posteriormente, no commit:
+
+> **Feat: implementando UseCases**
+
+foi realizada a migração da camada de Services para uma arquitetura baseada em **Use Cases**, aproximando o projeto de arquiteturas utilizadas em aplicações corporativas.
+
+Essa evolução trouxe benefícios como:
+
+* maior isolamento entre funcionalidades;
+* classes menores e com responsabilidade única;
+* testes unitários mais simples;
+* menor acoplamento entre regras de negócio.
+
+A estrutura atual permite evoluir naturalmente para padrões mais robustos, como:
+
 * CQRS
 * MediatR
 * Domain Driven Design (DDD)
 * Event Driven Architecture
 
-Caso o projeto crescesse em complexidade, a migração natural seria substituir os Services por Use Cases específicos, mantendo as mesmas entidades e repositórios.
-Posteriormente, seria possível separar completamente comandos e consultas utilizando CQRS, reduzindo o acoplamento entre operações de leitura e escrita.
+Caso o projeto cresça em complexidade, a migração para CQRS poderá ser realizada praticamente sem alterações na estrutura da solução, substituindo os Use Cases por Commands, Queries e respectivos Handlers.
 
 ---
 
@@ -82,7 +100,7 @@ Posteriormente, seria possível separar completamente comandos e consultas utili
 * Apenas apólices ativas podem abrir novos sinistros.
 * Fluxo de status unidirecional:
 
-```
+```text
 Aberto
     ↓
 Em Análise
@@ -101,7 +119,8 @@ Negado
 * Não é permitido pular etapas do fluxo.
 * Ao negar um sinistro, o motivo é obrigatório.
 * Ao encerrar um sinistro, o valor aprovado é obrigatório.
-* Toda alteração de status gera automaticamente um histórico.
+* Toda alteração de status gera automaticamente um registro de histórico.
+* Número da apólice e número do sinistro possuem restrição de unicidade no banco de dados.
 
 ---
 
@@ -110,7 +129,7 @@ Negado
 * .NET 9
 * ASP.NET Core Web API
 * Entity Framework Core
-* SQL Server (ou SQLite, conforme configuração)
+* SQL Server
 * AutoMapper
 * xUnit
 * FluentAssertions
@@ -120,32 +139,52 @@ Negado
 
 # Bibliotecas utilizadas
 
-| Biblioteca            | Finalidade                       |
-| --------------------- | -------------------------------- |
-| Entity Framework Core | ORM                              |
-| AutoMapper            | Mapeamento entre Entities e DTOs |
-| xUnit                 | Testes unitários                 |
-| FluentAssertions      | Assertions mais legíveis         |
-| Moq                   | Mock de dependências             |
+| Biblioteca                                          | Finalidade                            |
+| --------------------------------------------------- | ------------------------------------- |
+| Entity Framework Core                               | ORM                                   |
+| Microsoft.EntityFrameworkCore.SqlServer             | Provedor SQL Server                   |
+| Microsoft.EntityFrameworkCore.Tools                 | Migrations                            |
+| AutoMapper                                          | Mapeamento entre Entities e DTOs      |
+| AutoMapper.Extensions.Microsoft.DependencyInjection | Integração com DI                     |
+| xUnit                                               | Framework de testes                   |
+| xunit.runner.visualstudio                           | Runner dos testes                     |
+| Microsoft.NET.Test.Sdk                              | Infraestrutura de execução dos testes |
+| FluentAssertions                                    | Assertions fluentes                   |
+| Moq                                                 | Mock de dependências                  |
 
 ---
 
 # Testes
 
-Foram implementados testes unitários para as principais regras da aplicação, apenas na camada application.
+Foram implementados testes unitários para a camada **Application**, cobrindo todos os Use Cases da aplicação.
 
-## Camada Application
+Os testes contemplam:
 
-Testes dos Services:
+### Apólices
 
-* criação de sinistro;
-* atualização de status;
-* criação de apólice;
-* consultas;
-* validação de exceções;
-* verificação das chamadas aos repositórios e Unit of Work.
+* Criação de apólice;
+* Consulta por Id;
+* Consulta com sinistros;
+* Consulta paginada;
+* Atualização de status.
 
-Por se tratar de um teste técnico, optei por não implementar testes de integração para os Repositories.
+### Sinistros
+
+* Criação de sinistro;
+* Consulta por Id;
+* Consulta paginada;
+* Consulta do histórico;
+* Atualização de status.
+
+Também foram testados cenários de:
+
+* exceções;
+* validação das regras de negócio;
+* chamadas aos repositórios;
+* persistência através do Unit of Work;
+* mapeamentos realizados pelo AutoMapper.
+
+Por se tratar de um teste técnico, optei por não implementar testes de integração para os Repositories, focando na validação das regras de negócio da camada de Application.
 
 ---
 
@@ -154,7 +193,7 @@ Por se tratar de um teste técnico, optei por não implementar testes de integra
 ## Pré-requisitos
 
 * .NET SDK 9
-* SQL Server (ou SQLite, conforme configuração)
+* SQL Server
 * Entity Framework CLI
 
 Caso não possua a ferramenta do EF instalada:
@@ -173,7 +212,7 @@ Edite a Connection String no arquivo:
 Segfy.API/appsettings.json
 ```
 
-Exemplo para SQL Server:
+Exemplo:
 
 ```json
 {
@@ -183,23 +222,19 @@ Exemplo para SQL Server:
 }
 ```
 
+Caso utilize outra instância do SQL Server, basta ajustar a connection string para o seu ambiente.
+
 ---
 
-## Criar banco
+## Criar o banco de dados
 
-Executar as migrations:
-
-```bash
-dotnet ef database update --project Segfy.Infrastructure --startup-project Segfy.API
-```
-
-Caso ainda não exista nenhuma migration:
+Caso ainda não exista uma migration:
 
 ```bash
 dotnet ef migrations add InitialCreate --project Segfy.Infrastructure --startup-project Segfy.API
 ```
 
-Depois:
+Aplicar as migrations:
 
 ```bash
 dotnet ef database update --project Segfy.Infrastructure --startup-project Segfy.API
@@ -207,11 +242,13 @@ dotnet ef database update --project Segfy.Infrastructure --startup-project Segfy
 
 ---
 
-## Executar aplicação
+## Executar a aplicação
 
 ```bash
 dotnet run --project Segfy.API
 ```
+
+A API estará disponível utilizando o endereço configurado pelo ASP.NET Core.
 
 ---
 
@@ -225,15 +262,11 @@ dotnet run --project Segfy.API
 POST /api/sinistros
 ```
 
----
-
-### Consultar sinistro por Id
+### Consultar por Id
 
 ```
 GET /api/sinistros/{id}
 ```
-
----
 
 ### Listar sinistros
 
@@ -256,15 +289,11 @@ Exemplo:
 GET /api/sinistros?status=EM_ANALISE&page=1&pageSize=10
 ```
 
----
-
-### Histórico do sinistro
+### Histórico
 
 ```
 GET /api/sinistros/{id}/historico
 ```
-
----
 
 ### Atualizar status
 
@@ -276,9 +305,9 @@ Body:
 
 ```json
 {
-    "status": "APROVADO",
-    "motivoNegativa": null,
-    "valorAprovado": 1500
+  "status": "APROVADO",
+  "motivoNegativa": null,
+  "valorAprovado": 1500
 }
 ```
 
@@ -286,13 +315,11 @@ Body:
 
 ## Apólices
 
-### Criar apólice
+### Criar
 
 ```
 POST /api/apolices
 ```
-
----
 
 ### Buscar por Id
 
@@ -300,30 +327,24 @@ POST /api/apolices
 GET /api/apolices/{id}
 ```
 
----
-
-### Buscar apólice com sinistros
+### Buscar com sinistros
 
 ```
 GET /api/apolices/{id}/sinistros
 ```
 
----
-
-### Listar apólices
+### Listar
 
 ```
 GET /api/apolices
 ```
 
-Filtros:
+Filtros disponíveis:
 
 * status
 * data
 * page
 * pageSize
-
----
 
 ### Atualizar status
 
@@ -331,8 +352,10 @@ Filtros:
 PATCH /api/apolices/{id}/status
 ```
 
+---
+
 # Considerações finais
 
-O objetivo deste projeto foi demonstrar uma arquitetura organizada, desacoplada e de fácil evolução, priorizando boas práticas do ecossistema .NET.
+O objetivo deste projeto foi demonstrar a implementação de uma API utilizando boas práticas do ecossistema .NET, com foco em organização, desacoplamento e facilidade de manutenção.
 
-A estrutura atual permite que novas funcionalidades sejam adicionadas com baixo acoplamento e oferece um caminho natural para evolução futura para padrões como Use Cases, CQRS e DDD, sem necessidade de reestruturação significativa da solução.
+A adoção de **Use Cases** tornou a camada de Application mais coesa e aderente aos princípios da Clean Architecture. Além disso, a estrutura atual foi preparada para evoluir futuramente para arquiteturas baseadas em **DDD** e **CQRS**, sem necessidade de grandes alterações estruturais, permitindo que o projeto acompanhe naturalmente o aumento de complexidade de uma aplicação real.
