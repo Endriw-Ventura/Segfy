@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Segfy.Infrastructure.Persistence.Migrations
+namespace Segfy.Infrastructure.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration
@@ -15,14 +15,14 @@ namespace Segfy.Infrastructure.Persistence.Migrations
                 name: "Apolices",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    NumeroApolice = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
-                    NomeSegurado = table.Column<string>(type: "TEXT", nullable: false),
-                    DataInicio = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    DataFim = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    Status = table.Column<int>(type: "INTEGER", nullable: false),
-                    ramo = table.Column<int>(type: "INTEGER", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    NumeroApolice = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    NomeSegurado = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DataInicio = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DataFim = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    ramo = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -33,16 +33,16 @@ namespace Segfy.Infrastructure.Persistence.Migrations
                 name: "Sinistros",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    NumeroSinistro = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
-                    DataSinistro = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    Descricao = table.Column<string>(type: "TEXT", maxLength: 500, nullable: false),
-                    ValorSolicitado = table.Column<decimal>(type: "TEXT", precision: 18, scale: 2, nullable: false),
-                    ValorAprovado = table.Column<decimal>(type: "TEXT", nullable: true),
-                    MotivoNegativa = table.Column<string>(type: "TEXT", nullable: true),
-                    Status = table.Column<int>(type: "INTEGER", nullable: false),
-                    ApoliceId = table.Column<int>(type: "INTEGER", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    NumeroSinistro = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    DataSinistro = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Descricao = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    ValorSolicitado = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    ValorAprovado = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    MotivoNegativa = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    ApoliceId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -59,13 +59,13 @@ namespace Segfy.Infrastructure.Persistence.Migrations
                 name: "HistoricoSinistros",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    SinistroId = table.Column<int>(type: "INTEGER", nullable: false),
-                    StatusAnterior = table.Column<int>(type: "INTEGER", nullable: true),
-                    StatusNovo = table.Column<int>(type: "INTEGER", nullable: false),
-                    Observacao = table.Column<string>(type: "TEXT", nullable: true),
-                    CriadoEm = table.Column<DateTime>(type: "TEXT", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SinistroId = table.Column<int>(type: "int", nullable: false),
+                    StatusAnterior = table.Column<int>(type: "int", nullable: true),
+                    StatusNovo = table.Column<int>(type: "int", nullable: false),
+                    Observacao = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CriadoEm = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
