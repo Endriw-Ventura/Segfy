@@ -56,10 +56,6 @@ public class SinistrosController(
     public async Task<IActionResult> GetHistorico(int id)
     {
         var historico = await _getHistoricoSinistroUseCase.ExecuteAsync(id);
-
-        if (historico is null || !historico.Any())
-            return NotFound();
-
         return Ok(historico);
     }
 

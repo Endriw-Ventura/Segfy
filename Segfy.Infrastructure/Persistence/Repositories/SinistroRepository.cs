@@ -40,7 +40,7 @@ namespace Segfy.Infrastructure.Persistence.Repositories
 
         public async Task<Sinistro?> GetSinistroByIdAsync(int id)
         {
-            return await _context.Sinistros.AsNoTracking().FirstOrDefaultAsync(s => s.Id == id);
+            return await _context.Sinistros.Include(s => s.Apolice).AsNoTracking().FirstOrDefaultAsync(s => s.Id == id);
         }
 
         public async Task<Sinistro?> GetSinistroByIdAsyncTracked(int id)

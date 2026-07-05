@@ -9,6 +9,6 @@ namespace Segfy.Application.UseCases.Sinistros.CreateSinistro
 {
     public interface ICreateSinistroUseCase
     {
-        Task<SinistroDTO> ExecuteAsync(CreateSinistroDTO sinistro);
+        Task<GetSinistroDTO> ExecuteAsync(CreateSinistroDTO sinistro);
     }
 }

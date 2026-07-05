@@ -17,7 +17,7 @@ namespace Segfy.Application.DTOs.Apolice
         public DateTime DataInicio { get; set; }
         public DateTime DataFim { get; set; }
         public StatusApolice Status { get; set; }
-        public List<SinistroDTO> Sinistros { get; set; } = new List<SinistroDTO>();
+        public List<GetSinistroDTO> Sinistros { get; set; } = new List<GetSinistroDTO>();
         public Ramo Ramo { get; set; }
     }
 }

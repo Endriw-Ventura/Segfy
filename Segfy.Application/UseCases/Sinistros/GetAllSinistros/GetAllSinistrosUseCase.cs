@@ -14,13 +14,13 @@ namespace Segfy.Application.UseCases.Sinistros.GetAllSinistros
     {
         private readonly ISinistroRepository _sinistroRepository = sinistroRepository;
         private readonly IMapper _mapper = mapper;
-        public async Task<IEnumerable<SinistroDTO>> ExecuteAsync (StatusSinistro? status, DateTime? data, int page, int pageSize)
+        public async Task<IEnumerable<GetSinistroDTO>> ExecuteAsync (StatusSinistro? status, DateTime? data, int page, int pageSize)
         {
             page = page < 1 ? 1 : page;
             pageSize = pageSize < 1 ? 10 : pageSize;
 
             var sinistros = await _sinistroRepository.GetAllAsync(status, data, page, pageSize);
-            return _mapper.Map<IEnumerable<SinistroDTO>>(sinistros);
+            return _mapper.Map<IEnumerable<GetSinistroDTO>>(sinistros);
         }
     }
 }

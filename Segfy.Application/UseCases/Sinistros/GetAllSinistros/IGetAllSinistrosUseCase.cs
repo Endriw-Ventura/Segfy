@@ -10,6 +10,6 @@ namespace Segfy.Application.UseCases.Sinistros.GetAllSinistros
 {
     public interface IGetAllSinistrosUseCase
     {
-        Task<IEnumerable<SinistroDTO>> ExecuteAsync (StatusSinistro? status, DateTime? data, int page, int pageSize);
+        Task<IEnumerable<GetSinistroDTO>> ExecuteAsync (StatusSinistro? status, DateTime? data, int page, int pageSize);
     }
 }

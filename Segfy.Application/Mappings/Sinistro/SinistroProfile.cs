@@ -10,6 +10,7 @@ namespace Segfy.Application.Mappings.Sinistro
         {
             CreateMap<DomainSinistro, SinistroDTO>();
             CreateMap<DomainSinistro, CreateSinistroDTO>();
+            CreateMap<DomainSinistro, GetSinistroDTO>();
         }
     }
 }
