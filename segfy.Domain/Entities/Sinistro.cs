@@ -24,7 +24,7 @@ namespace segfy.Domain.Entities
         private readonly List<HistoricoSinistros> _historicos = [];
         public  ICollection<HistoricoSinistros> Historicos => _historicos.AsReadOnly();
 
-
+        protected Sinistro() { }
         public Sinistro(string numeroSinistro, DateTime dataSinistro, string descricao, decimal? valor, Apolice apolice)
         {
             if (apolice is null)
@@ -96,7 +96,7 @@ namespace segfy.Domain.Entities
 
         public void Close(decimal? valorAprovado)
         {
-            if (valorAprovado <= 0)
+            if(!valorAprovado.HasValue || valorAprovado <= 0)
                 throw new DomainException("O valor aprovado é obrigatório para encerrar o sinistro.");
 
             ValorAprovado = valorAprovado;

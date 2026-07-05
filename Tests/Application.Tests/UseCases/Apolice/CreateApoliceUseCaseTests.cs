@@ -5,6 +5,7 @@ using Segfy.Application.DTOs.Apolice;
 using Segfy.Application.Interfaces;
 using Segfy.Application.Interfaces.Apolice;
 using Segfy.Application.UseCases.Apolices.Create;
+using Segfy.Domain.Enums;
 using Xunit;
 using DomainApolice = segfy.Domain.Entities.Apolice;
 
@@ -39,7 +40,8 @@ public class CreateApoliceUseCaseTests
             request.NumeroApolice,
             request.NomeSegurado,
             request.DataInicio,
-            request.DataFim);
+            request.DataFim,
+            Ramo.AUTOMOVEL);
 
         var response = new ApoliceDTO
         {
@@ -179,6 +181,7 @@ public class CreateApoliceUseCaseTests
             request.NumeroApolice,
             request.NomeSegurado,
             request.DataInicio,
-            request.DataFim);
+            request.DataFim,
+            Ramo.AUTOMOVEL);
     }
 }

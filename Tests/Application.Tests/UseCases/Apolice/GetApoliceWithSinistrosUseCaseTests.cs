@@ -4,6 +4,7 @@ using Moq;
 using Segfy.Application.DTOs.Apolice;
 using Segfy.Application.Interfaces.Apolice;
 using Segfy.Application.UseCases.Apolices.GetApoliceWithSinistros;
+using Segfy.Domain.Enums;
 using Xunit;
 using DomainApolice = segfy.Domain.Entities.Apolice;
 
@@ -99,6 +100,7 @@ public class GetApoliceWithSinistrosUseCaseTests
             "123",
             "Nome",
             DateTime.Now.AddMonths(-2),
-            DateTime.Now.AddMonths(2));
+            DateTime.Now.AddMonths(2),
+            Ramo.AUTOMOVEL);
     }
 }

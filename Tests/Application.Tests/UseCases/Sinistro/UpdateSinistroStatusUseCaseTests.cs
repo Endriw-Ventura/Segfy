@@ -5,6 +5,7 @@ using segfy.Domain.Exceptions;
 using Segfy.Application.Interfaces;
 using Segfy.Application.Interfaces.Sinistro;
 using Segfy.Application.UseCases.Sinistros.UpdateSinistroStatus;
+using Segfy.Domain.Enums;
 using Xunit;
 using DomainApolice = segfy.Domain.Entities.Apolice;
 using DomainSinistro = segfy.Domain.Entities.Sinistro;
@@ -232,7 +233,8 @@ public class UpdateSinistroStatusUseCaseTests
             "AP-001",
             "João Silva",
             DateTime.Now.AddMonths(-2),
-            DateTime.Now.AddMonths(10));
+            DateTime.Now.AddMonths(10),
+            Ramo.AUTOMOVEL);
 
         return new DomainSinistro(
             "SIN-001",

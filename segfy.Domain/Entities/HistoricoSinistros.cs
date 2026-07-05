@@ -17,6 +17,8 @@ namespace segfy.Domain.Entities
         public string? Observacao { get; private set; }
         public DateTime CriadoEm { get; private set; }
 
+        protected HistoricoSinistros() { }
+
         public HistoricoSinistros(
             int sinistroId,
             StatusSinistro? statusAnterior,

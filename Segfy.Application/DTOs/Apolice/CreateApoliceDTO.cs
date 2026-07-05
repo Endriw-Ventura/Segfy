@@ -1,4 +1,5 @@
 ﻿using segfy.Domain.Enums;
+using Segfy.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,5 +14,6 @@ namespace Segfy.Application.DTOs.Apolice
         public string NomeSegurado { get; set; }
         public DateTime DataInicio { get; set; }
         public DateTime DataFim { get; set; }
+        public Ramo Ramo { get; set; }
     }
 }

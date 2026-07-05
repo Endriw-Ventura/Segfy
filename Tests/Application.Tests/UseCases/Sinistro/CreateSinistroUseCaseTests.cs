@@ -199,6 +199,7 @@ public class CreateSinistroUseCaseTests
             "AP-001",
             "João Silva",
             DateTime.Now.AddMonths(-2),
-            DateTime.Now.AddMonths(10));
+            DateTime.Now.AddMonths(10),
+            Domain.Enums.Ramo.AUTOMOVEL);
     }
 }

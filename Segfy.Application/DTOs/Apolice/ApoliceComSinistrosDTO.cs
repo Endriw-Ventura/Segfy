@@ -1,5 +1,6 @@
 ﻿using segfy.Domain.Enums;
 using Segfy.Application.DTOs.Sinistro;
+using Segfy.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,5 +18,6 @@ namespace Segfy.Application.DTOs.Apolice
         public DateTime DataFim { get; set; }
         public StatusApolice Status { get; set; }
         public List<SinistroDTO> Sinistros { get; set; } = new List<SinistroDTO>();
+        public Ramo Ramo { get; set; }
     }
 }

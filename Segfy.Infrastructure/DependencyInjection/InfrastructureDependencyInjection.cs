@@ -8,6 +8,7 @@ using Segfy.Infrastructure.Persistence;
 using Segfy.Infrastructure.Persistence.Context;
 using Segfy.Infrastructure.Persistence.Repositories;
 
+
 namespace Segfy.Infrastructure.DependencyInjection
 {
     public static class InfrastructureDependencyInjection
@@ -17,7 +18,8 @@ namespace Segfy.Infrastructure.DependencyInjection
        IConfiguration configuration)
         {
             services.AddDbContext<AppDBContext>(options =>
-                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlite(
+                    configuration.GetConnectionString("DefaultConnection")));
 
             services.AddScoped<ISinistroRepository, SinistroRepository>();
             services.AddScoped<IApoliceRepository, ApoliceRepository>();

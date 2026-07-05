@@ -5,6 +5,7 @@ using segfy.Domain.Enums;
 using Segfy.Application.DTOs.Apolice;
 using Segfy.Application.Interfaces.Apolice;
 using Segfy.Application.UseCases.Apolices.GetAll;
+using Segfy.Domain.Enums;
 using Xunit;
 using DomainApolice = segfy.Domain.Entities.Apolice;
 
@@ -129,6 +130,7 @@ public class GetAllApolicesUseCaseTests
             numero,
             "Nome",
             DateTime.Now.AddMonths(-2),
-            DateTime.Now.AddMonths(2));
+            DateTime.Now.AddMonths(2),
+            Ramo.AUTOMOVEL);
     }
 }

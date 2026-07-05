@@ -5,6 +5,7 @@ using segfy.Domain.Exceptions;
 using Segfy.Application.Interfaces;
 using Segfy.Application.Interfaces.Apolice;
 using Segfy.Application.UseCases.Apolices.UpdateApoliceStatus;
+using Segfy.Domain.Enums;
 using Xunit;
 using DomainApolice = segfy.Domain.Entities.Apolice;
 
@@ -169,6 +170,7 @@ public class UpdateApoliceStatusUseCaseTests
             "123",
             "Nome",
             DateTime.Now.AddMonths(-2),
-            DateTime.Now.AddMonths(2));
+            DateTime.Now.AddMonths(2),
+            Ramo.AUTOMOVEL);
     }
 }
