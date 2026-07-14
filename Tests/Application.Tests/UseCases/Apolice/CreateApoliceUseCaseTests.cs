@@ -33,29 +33,24 @@ public class CreateApoliceUseCaseTests
             NumeroApolice = "AP-001",
             NomeSegurado = "João Silva",
             DataInicio = DateTime.Now.AddMonths(-1),
-            DataFim = DateTime.Now.AddMonths(11)
+            DataFim = DateTime.Now.AddMonths(11),
+            Ramo = Ramo.AUTOMOVEL
         };
-
-        var apolice = new DomainApolice(
-            request.NumeroApolice,
-            request.NomeSegurado,
-            request.DataInicio,
-            request.DataFim,
-            Ramo.AUTOMOVEL);
 
         var response = new ApoliceDTO
         {
-            Id = apolice.Id,
             NumeroApolice = request.NumeroApolice,
             NomeSegurado = request.NomeSegurado
         };
 
-        _mapper
-            .Setup(x => x.Map<DomainApolice>(request))
-            .Returns(apolice);
+        _apoliceRepository
+            .Setup(x => x.CheckForDuplicateNumeroApolice(
+                request.NumeroApolice))
+            .ReturnsAsync(false);
 
         _mapper
-            .Setup(x => x.Map<ApoliceDTO>(apolice))
+            .Setup(x => x.Map<ApoliceDTO>(
+                It.IsAny<DomainApolice>()))
             .Returns(response);
 
         var useCase = CreateUseCase();
@@ -67,7 +62,10 @@ public class CreateApoliceUseCaseTests
         result.NomeSegurado.Should().Be("João Silva");
 
         _apoliceRepository.Verify(
-            x => x.AddApoliceAsync(apolice),
+            x => x.AddApoliceAsync(
+                It.Is<DomainApolice>(a =>
+                    a.NumeroApolice == request.NumeroApolice &&
+                    a.NomeSegurado == request.NomeSegurado)),
             Times.Once);
 
         _unitOfWork.Verify(
@@ -75,11 +73,10 @@ public class CreateApoliceUseCaseTests
             Times.Once);
 
         _mapper.Verify(
-            x => x.Map<DomainApolice>(request),
-            Times.Once);
-
-        _mapper.Verify(
-            x => x.Map<ApoliceDTO>(apolice),
+            x => x.Map<ApoliceDTO>(
+                It.Is<DomainApolice>(a =>
+                    a.NumeroApolice == request.NumeroApolice &&
+                    a.NomeSegurado == request.NomeSegurado)),
             Times.Once);
     }
 
@@ -87,15 +84,16 @@ public class CreateApoliceUseCaseTests
     public async Task ExecuteAsync_DeveSalvarAposAdicionarApolice()
     {
         var request = CriarRequest();
-        var apolice = CriarApolice(request);
-        var response = new ApoliceDTO { Id = apolice.Id };
+        var response = new ApoliceDTO();
+
+        _apoliceRepository
+            .Setup(x => x.CheckForDuplicateNumeroApolice(
+                request.NumeroApolice))
+            .ReturnsAsync(false);
 
         _mapper
-            .Setup(x => x.Map<DomainApolice>(request))
-            .Returns(apolice);
-
-        _mapper
-            .Setup(x => x.Map<ApoliceDTO>(apolice))
+            .Setup(x => x.Map<ApoliceDTO>(
+                It.IsAny<DomainApolice>()))
             .Returns(response);
 
         var useCase = CreateUseCase();
@@ -103,7 +101,13 @@ public class CreateApoliceUseCaseTests
         await useCase.ExecuteAsync(request);
 
         _apoliceRepository.Verify(
-            x => x.AddApoliceAsync(apolice),
+            x => x.AddApoliceAsync(
+                It.Is<DomainApolice>(a =>
+                    a.NumeroApolice == request.NumeroApolice &&
+                    a.NomeSegurado == request.NomeSegurado &&
+                    a.DataInicio == request.DataInicio &&
+                    a.DataFim == request.DataFim &&
+                    a.Ramo == request.Ramo)),
             Times.Once);
 
         _unitOfWork.Verify(
@@ -115,21 +119,21 @@ public class CreateApoliceUseCaseTests
     public async Task ExecuteAsync_DeveRetornarApoliceDTO()
     {
         var request = CriarRequest();
-        var apolice = CriarApolice(request);
 
         var expectedDto = new ApoliceDTO
         {
-            Id = apolice.Id,
             NumeroApolice = request.NumeroApolice,
             NomeSegurado = request.NomeSegurado
         };
 
-        _mapper
-            .Setup(x => x.Map<DomainApolice>(request))
-            .Returns(apolice);
+        _apoliceRepository
+            .Setup(x => x.CheckForDuplicateNumeroApolice(
+                request.NumeroApolice))
+            .ReturnsAsync(false);
 
         _mapper
-            .Setup(x => x.Map<ApoliceDTO>(apolice))
+            .Setup(x => x.Map<ApoliceDTO>(
+                It.IsAny<DomainApolice>()))
             .Returns(expectedDto);
 
         var useCase = CreateUseCase();
@@ -137,30 +141,46 @@ public class CreateApoliceUseCaseTests
         var result = await useCase.ExecuteAsync(request);
 
         result.Should().BeEquivalentTo(expectedDto);
+
+        _mapper.Verify(
+            x => x.Map<ApoliceDTO>(
+                It.Is<DomainApolice>(a =>
+                    a.NumeroApolice == request.NumeroApolice &&
+                    a.NomeSegurado == request.NomeSegurado)),
+            Times.Once);
     }
 
     [Fact]
     public async Task ExecuteAsync_NaoDeveChamarSaveChanges_QuandoAddApoliceFalhar()
     {
         var request = CriarRequest();
-        var apolice = CriarApolice(request);
-
-        _mapper
-            .Setup(x => x.Map<DomainApolice>(request))
-            .Returns(apolice);
 
         _apoliceRepository
-            .Setup(x => x.AddApoliceAsync(apolice))
+            .Setup(x => x.CheckForDuplicateNumeroApolice(
+                request.NumeroApolice))
+            .ReturnsAsync(false);
+
+        _apoliceRepository
+            .Setup(x => x.AddApoliceAsync(
+                It.IsAny<DomainApolice>()))
             .ThrowsAsync(new Exception("Erro ao adicionar apólice."));
 
         var useCase = CreateUseCase();
 
-        Func<Task> act = async () => await useCase.ExecuteAsync(request);
+        Func<Task> act = async () =>
+            await useCase.ExecuteAsync(request);
 
-        await act.Should().ThrowAsync<Exception>();
+        await act.Should()
+            .ThrowAsync<Exception>()
+            .WithMessage("Erro ao adicionar apólice.");
 
         _unitOfWork.Verify(
             x => x.SaveChangesAsync(),
+            Times.Never);
+
+        _mapper.Verify(
+            x => x.Map<ApoliceDTO>(
+                It.IsAny<DomainApolice>()),
             Times.Never);
     }
 
@@ -171,7 +191,8 @@ public class CreateApoliceUseCaseTests
             NumeroApolice = "AP-001",
             NomeSegurado = "João Silva",
             DataInicio = DateTime.Now.AddMonths(-1),
-            DataFim = DateTime.Now.AddMonths(11)
+            DataFim = DateTime.Now.AddMonths(11),
+            Ramo = Ramo.AUTOMOVEL
         };
     }
 

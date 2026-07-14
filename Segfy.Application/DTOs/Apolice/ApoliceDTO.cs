@@ -11,8 +11,8 @@ namespace Segfy.Application.DTOs.Apolice
     public class ApoliceDTO
     {
         public int Id { get; set; }
-        public string NumeroApolice { get; set; }
-        public string NomeSegurado { get; set; }
+        public string NumeroApolice { get; set; } = string.Empty;
+        public string NomeSegurado { get; set; } = string.Empty;
         public DateTime DataInicio { get; set; }
         public DateTime DataFim { get; set; }
         public StatusApolice Status { get; set; }

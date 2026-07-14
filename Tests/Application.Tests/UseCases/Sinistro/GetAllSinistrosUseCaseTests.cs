@@ -28,21 +28,32 @@ public class GetAllSinistrosUseCaseTests
     public async Task ExecuteAsync_DeveRetornarListaVazia_QuandoNaoExistiremSinistros()
     {
         var sinistros = new List<DomainSinistro>();
-        var dtos = new List<SinistroDTO>();
+        var dtos = new List<GetSinistroDTO>();
 
         _sinistroRepository
             .Setup(x => x.GetAllAsync(null, null, 1, 10))
             .ReturnsAsync(sinistros);
 
         _mapper
-            .Setup(x => x.Map<IEnumerable<SinistroDTO>>(sinistros))
+            .Setup(x => x.Map<IEnumerable<GetSinistroDTO>>(
+                It.IsAny<IEnumerable<DomainSinistro>>()))
             .Returns(dtos);
 
         var useCase = CreateUseCase();
 
         var result = await useCase.ExecuteAsync(null, null, 1, 10);
 
+        result.Should().NotBeNull();
         result.Should().BeEmpty();
+
+        _sinistroRepository.Verify(
+            x => x.GetAllAsync(null, null, 1, 10),
+            Times.Once);
+
+        _mapper.Verify(
+            x => x.Map<IEnumerable<GetSinistroDTO>>(
+                It.IsAny<IEnumerable<DomainSinistro>>()),
+            Times.Once);
     }
 
     [Fact]
@@ -54,10 +65,18 @@ public class GetAllSinistrosUseCaseTests
             CriarSinistro("SIN-002")
         };
 
-        var dtos = new List<SinistroDTO>
+        var dtos = new List<GetSinistroDTO>
         {
-            new() { Id = sinistros[0].Id, NumeroSinistro = "SIN-001" },
-            new() { Id = sinistros[1].Id, NumeroSinistro = "SIN-002" }
+            new()
+            {
+                Id = sinistros[0].Id,
+                NumeroSinistro = "SIN-001"
+            },
+            new()
+            {
+                Id = sinistros[1].Id,
+                NumeroSinistro = "SIN-002"
+            }
         };
 
         _sinistroRepository
@@ -65,15 +84,23 @@ public class GetAllSinistrosUseCaseTests
             .ReturnsAsync(sinistros);
 
         _mapper
-            .Setup(x => x.Map<IEnumerable<SinistroDTO>>(sinistros))
+            .Setup(x => x.Map<IEnumerable<GetSinistroDTO>>(
+                It.IsAny<IEnumerable<DomainSinistro>>()))
             .Returns(dtos);
 
         var useCase = CreateUseCase();
 
         var result = await useCase.ExecuteAsync(null, null, 1, 10);
 
+        result.Should().NotBeNull();
         result.Should().HaveCount(2);
-        result.First().NumeroSinistro.Should().Be("SIN-001");
+        result.Should().BeEquivalentTo(dtos);
+
+        result.Should().ContainSingle(x =>
+            x.NumeroSinistro == "SIN-001");
+
+        result.Should().ContainSingle(x =>
+            x.NumeroSinistro == "SIN-002");
     }
 
     [Fact]
@@ -83,14 +110,15 @@ public class GetAllSinistrosUseCaseTests
         var data = DateTime.Today;
 
         var sinistros = new List<DomainSinistro>();
-        var dtos = new List<SinistroDTO>();
+        var dtos = new List<GetSinistroDTO>();
 
         _sinistroRepository
             .Setup(x => x.GetAllAsync(status, data, 2, 20))
             .ReturnsAsync(sinistros);
 
         _mapper
-            .Setup(x => x.Map<IEnumerable<SinistroDTO>>(sinistros))
+            .Setup(x => x.Map<IEnumerable<GetSinistroDTO>>(
+                It.IsAny<IEnumerable<DomainSinistro>>()))
             .Returns(dtos);
 
         var useCase = CreateUseCase();
@@ -100,20 +128,23 @@ public class GetAllSinistrosUseCaseTests
         _sinistroRepository.Verify(
             x => x.GetAllAsync(status, data, 2, 20),
             Times.Once);
+
+        _sinistroRepository.VerifyNoOtherCalls();
     }
 
     [Fact]
     public async Task ExecuteAsync_DeveNormalizarPaginacao_QuandoValoresInvalidos()
     {
         var sinistros = new List<DomainSinistro>();
-        var dtos = new List<SinistroDTO>();
+        var dtos = new List<GetSinistroDTO>();
 
         _sinistroRepository
             .Setup(x => x.GetAllAsync(null, null, 1, 10))
             .ReturnsAsync(sinistros);
 
         _mapper
-            .Setup(x => x.Map<IEnumerable<SinistroDTO>>(sinistros))
+            .Setup(x => x.Map<IEnumerable<GetSinistroDTO>>(
+                It.IsAny<IEnumerable<DomainSinistro>>()))
             .Returns(dtos);
 
         var useCase = CreateUseCase();
@@ -133,9 +164,13 @@ public class GetAllSinistrosUseCaseTests
             CriarSinistro("SIN-001")
         };
 
-        var dtos = new List<SinistroDTO>
+        var dtos = new List<GetSinistroDTO>
         {
-            new() { Id = sinistros[0].Id, NumeroSinistro = "SIN-001" }
+            new()
+            {
+                Id = sinistros[0].Id,
+                NumeroSinistro = "SIN-001"
+            }
         };
 
         _sinistroRepository
@@ -143,7 +178,8 @@ public class GetAllSinistrosUseCaseTests
             .ReturnsAsync(sinistros);
 
         _mapper
-            .Setup(x => x.Map<IEnumerable<SinistroDTO>>(sinistros))
+            .Setup(x => x.Map<IEnumerable<GetSinistroDTO>>(
+                It.IsAny<IEnumerable<DomainSinistro>>()))
             .Returns(dtos);
 
         var useCase = CreateUseCase();
@@ -151,7 +187,8 @@ public class GetAllSinistrosUseCaseTests
         await useCase.ExecuteAsync(null, null, 1, 10);
 
         _mapper.Verify(
-            x => x.Map<IEnumerable<SinistroDTO>>(sinistros),
+            x => x.Map<IEnumerable<GetSinistroDTO>>(
+                It.IsAny<IEnumerable<DomainSinistro>>()),
             Times.Once);
     }
 
