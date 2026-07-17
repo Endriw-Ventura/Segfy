@@ -25,4 +25,9 @@
     <ProjectReference Include="..\Segfy.Infrastructure\Segfy.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Application.Tests\Apolices\" />
+    <Folder Include="Application.Tests\Sinistros\" />
+  </ItemGroup>
+
 </Project>

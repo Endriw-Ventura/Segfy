@@ -1,45 +1,33 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using segfy.Domain.Enums;
-using Segfy.Application.DTOs.Apolice;
-using Segfy.Application.UseCases.Apolices.Create;
-using Segfy.Application.UseCases.Apolices.GetAll;
-using Segfy.Application.UseCases.Apolices.GetApoliceById;
-using Segfy.Application.UseCases.Apolices.GetApoliceWithSinistros;
-using Segfy.Application.UseCases.Apolices.UpdateApoliceStatus;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using Segfy.API.Requests.Apolices;
+using Segfy.Application.Apolice.Commands.CreateApolice;
+using Segfy.Application.Apolice.Commands.UpdateApoliceStatus;
+using Segfy.Application.Apolice.Queries.GetAllApolicesQuery;
+using Segfy.Application.Apolice.Queries.GetApoliceByIdQuery;
+using Segfy.Application.Apolice.Queries.GetApoliceWithSinistrosQuery;
 
 namespace Segfy.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
     public class ApolicesController(
-        IGetApoliceWithSinistrosUseCase getApoliceWithSinistrosUseCase,
-        IGetAllApoliciesUseCase getAllApoliciesUseCase,
-        IGetApoliceByIdUseCase getApoliceByIdUseCase,
-        ICreateApoliceUseCase createApoliceUseCase,
-        IUpdateApoliceStatusUseCase updateApoliceStatusUseCase
+        ISender sender
         ) : ControllerBase
     {
-        public readonly IGetApoliceWithSinistrosUseCase _getApoliceWithSinistrosUseCase = getApoliceWithSinistrosUseCase;
-        public readonly IGetAllApoliciesUseCase _getAllApoliciesUseCase = getAllApoliciesUseCase;
-        public readonly IGetApoliceByIdUseCase _getApoliceByIdUseCase = getApoliceByIdUseCase;
-        public readonly ICreateApoliceUseCase _createApoliceUseCase = createApoliceUseCase;
-        public readonly IUpdateApoliceStatusUseCase _updateApoliceStatusUseCase = updateApoliceStatusUseCase;
-
         [HttpGet]
         public async Task<IActionResult> GetAll(
-        [FromQuery] StatusApolice? status,
-        [FromQuery] DateTime? data,
-        [FromQuery] int page = 1,
-        [FromQuery] int pageSize = 10)
+        [FromQuery] GetAllApolicesQuery request,
+        CancellationToken cancellationToken)
         {
-           var result = await _getAllApoliciesUseCase.ExecuteAsync(status, data, page, pageSize);
-           return Ok(result);
+            var result = await sender.Send(request, cancellationToken);
+            return Ok(result);
         }
 
         [HttpGet("{id:int}")]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<IActionResult> GetById([FromRoute] int id,CancellationToken cancellationToken)
         {
-            var result = await _getApoliceByIdUseCase.ExecuteAsync(id);
+            var result = await sender.Send(new GetApoliceByIdQuery(id), cancellationToken);
             if (result is null)
                 return NotFound();
 
@@ -47,25 +35,35 @@ namespace Segfy.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateApoliceDTO request)
+        public async Task<IActionResult> Create([FromBody] CreateApoliceRequest request, CancellationToken cancellationToken)
         {
-            var result = await _createApoliceUseCase.ExecuteAsync(request);
+            var command = new CreateApoliceCommand
+            (
+                 request.NumeroApolice,
+                 request.NomeSegurado,
+                 request.DataInicio,
+                 request.DataFim,
+                 request.Ramo
+            );
+            var result = await sender.Send(command, cancellationToken);
             return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
         }
 
         [HttpPatch("{id:int}/status")]
         public async Task<IActionResult> UpdateStatus(
-            int id,
-            [FromBody] UpdateStatusApoliceDTO request)
+            [FromRoute] int id,
+            [FromBody] UpdateApoliceStatusRequest request, CancellationToken cancellationToken)
         {
-            await _updateApoliceStatusUseCase.ExecuteAsync(id, request.Status);
+            var command = new UpdateApoliceStatusCommand(id, request.Status);
+            await sender.Send(command, cancellationToken);
             return NoContent();
         }
 
         [HttpGet("{id:int}/sinistros")]
-        public async Task<IActionResult> GetApoliceWithSinistros(int id)
+        public async Task<IActionResult> GetApoliceWithSinistros([FromRoute] int id,
+            CancellationToken cancellationToken)
         {
-            var result = await _getApoliceWithSinistrosUseCase.ExecuteAsync(id);
+            var result = await sender.Send(new GetApoliceWithSinistrosQuery(id), cancellationToken);
             if (result is null)
                 return NotFound();
 

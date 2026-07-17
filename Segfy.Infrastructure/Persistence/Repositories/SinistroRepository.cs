@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using segfy.Domain.Entities;
 using segfy.Domain.Enums;
-using Segfy.Application.Interfaces.Sinistro;
+using Segfy.Application.Interfaces.Sinistros;
 using Segfy.Infrastructure.Persistence.Context;
 
 namespace Segfy.Infrastructure.Persistence.Repositories
@@ -9,12 +9,12 @@ namespace Segfy.Infrastructure.Persistence.Repositories
     public class SinistroRepository(AppDBContext context) : ISinistroRepository
     {
         private readonly AppDBContext _context = context;
-        public async Task AddSinistroAsync(Sinistro sinistro)
+        public async Task AddSinistroAsync(Sinistro sinistro, CancellationToken cancellationToken)
         {
-            await _context.Sinistros.AddAsync(sinistro);
+            await _context.Sinistros.AddAsync(sinistro, cancellationToken);
         }
 
-        public async Task<IEnumerable<Sinistro>> GetAllAsync(StatusSinistro? status, DateTime? data, int page, int pageSize)
+        public async Task<IEnumerable<Sinistro>> GetAllAsync(StatusSinistro? status, DateTime? data, int page, int pageSize, CancellationToken cancellationToken)
         {
             var query = _context.Sinistros
                 .AsNoTracking()
@@ -35,33 +35,33 @@ namespace Segfy.Infrastructure.Persistence.Repositories
             return await query
                 .Skip(((page - 1) * pageSize))
                 .Take(pageSize)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
         }
 
-        public async Task<Sinistro?> GetSinistroByIdAsync(int id)
+        public async Task<Sinistro?> GetSinistroByIdAsync(int id, CancellationToken cancellationToken)
         {
-            return await _context.Sinistros.Include(s => s.Apolice).AsNoTracking().FirstOrDefaultAsync(s => s.Id == id);
+            return await _context.Sinistros.Include(s => s.Apolice).AsNoTracking().FirstOrDefaultAsync(s => s.Id == id, cancellationToken);
         }
 
-        public async Task<Sinistro?> GetSinistroByIdAsyncTracked(int id)
+        public async Task<Sinistro?> GetSinistroByIdAsyncTracked(int id, CancellationToken cancellationToken)
         {
             return await _context.Sinistros
                 .Include(s => s.Historicos)
-                .FirstOrDefaultAsync(s => s.Id == id);
+                .FirstOrDefaultAsync(s => s.Id == id, cancellationToken);
         }
 
-        public async Task<IEnumerable<HistoricoSinistros>> GetHistoricoSinistro(int id)
+        public async Task<IEnumerable<HistoricoSinistros>> GetHistoricoSinistro(int id, CancellationToken cancellationToken)
         {
             return await _context.HistoricoSinistros
                 .AsNoTracking()
                 .Where(h => h.SinistroId == id)
                 .OrderByDescending(h => h.CriadoEm)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
         }
 
-        public async Task<bool> CheckForDuplicateNumeroSinistroAsync(string numeroSinistro)
+        public async Task<bool> CheckForDuplicateNumeroSinistroAsync(string numeroSinistro, CancellationToken cancellationToken)
         {
-            return await _context.Sinistros.AnyAsync(a => a.NumeroSinistro == numeroSinistro);
+            return await _context.Sinistros.AnyAsync(a => a.NumeroSinistro == numeroSinistro, cancellationToken);
         }
     }
 }

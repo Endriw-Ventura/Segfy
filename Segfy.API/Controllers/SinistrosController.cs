@@ -1,50 +1,26 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using segfy.Domain.Enums;
-using Segfy.Application.DTOs.Sinistro;
-using Segfy.Application.UseCases.Sinistros.CreateSinistro;
-using Segfy.Application.UseCases.Sinistros.GetAllSinistros;
-using Segfy.Application.UseCases.Sinistros.GetHistoricoSinistro;
-using Segfy.Application.UseCases.Sinistros.GetSinistroById;
-using Segfy.Application.UseCases.Sinistros.UpdateSinistroStatus;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using Segfy.API.Requests.Sinistros;
+using Segfy.Application.Sinistro.Commands.CreateSinistro;
+using Segfy.Application.Sinistros.Commands.UpdateSinistroStatus;
 
 namespace Segfy.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class SinistrosController(
-    IGetAllSinistrosUseCase getAllSinistrosUseCase,
-    IGetSinistroByIdUseCase getSinistroByIdUseCase,
-    IGetHistoricoSinistroUseCase getHistoricoSinistroUseCase,
-    ICreateSinistroUseCase createSinistroUseCase,
-    IUpdateSinistroStatusUseCase updateSinistroStatusUseCase
-    ) : ControllerBase
+public class SinistrosController(ISender sender) : ControllerBase
 {
-    private readonly IGetAllSinistrosUseCase _getAllSinistroseCase = getAllSinistrosUseCase;
-    private readonly IGetSinistroByIdUseCase _getSinistroByIdUseCase = getSinistroByIdUseCase;
-    private readonly IGetHistoricoSinistroUseCase _getHistoricoSinistroUseCase = getHistoricoSinistroUseCase;
-    private readonly ICreateSinistroUseCase _createSinistroUseCase = createSinistroUseCase;
-    private readonly IUpdateSinistroStatusUseCase _updateSinistroStatusUseCase = updateSinistroStatusUseCase;
-
     [HttpGet]
-    public async Task<IActionResult> GetAll(
-        [FromQuery] StatusSinistro? status,
-        [FromQuery] DateTime? data,
-        [FromQuery] int page = 1,
-        [FromQuery] int pageSize = 10)
+    public async Task<IActionResult> GetAll(GetAllSinistrosRequest request, CancellationToken cancellationToken)
     {
-        var sinistros = await _getAllSinistroseCase.ExecuteAsync(
-            status,
-            data,
-            page,
-            pageSize);
-
+        var sinistros = await sender.Send(request, cancellationToken);
         return Ok(sinistros);
     }
 
     [HttpGet("{id:int}")]
-    public async Task<IActionResult> GetById(int id)
+    public async Task<IActionResult> GetById([FromRoute] int id, CancellationToken cancellationToken)
     {
-        var sinistro = await _getSinistroByIdUseCase.ExecuteAsync(id);
+        var sinistro = await sender.Send(id, cancellationToken);
 
         if (sinistro is null)
             return NotFound();
@@ -53,16 +29,25 @@ public class SinistrosController(
     }
 
     [HttpGet("{id:int}/historico")]
-    public async Task<IActionResult> GetHistorico(int id)
+    public async Task<IActionResult> GetHistorico([FromRoute] int id, CancellationToken cancellationToken)
     {
-        var historico = await _getHistoricoSinistroUseCase.ExecuteAsync(id);
+        var historico = await sender.Send(id, cancellationToken);
         return Ok(historico);
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreateSinistroDTO request)
+    public async Task<IActionResult> Create([FromBody] CreateSinistroRequest request, CancellationToken cancellationToken)
     {
-        var sinistro = await _createSinistroUseCase.ExecuteAsync(request);
+
+        var command = new CreateSinistroCommand(
+            request.NumeroSinistro, 
+            request.DataSinistro, 
+            request.Descricao, 
+            request.ValorSolicitado, 
+            request.ApoliceId
+            );
+
+        var sinistro = await sender.Send(command, cancellationToken);
 
         return CreatedAtAction(
             nameof(GetById),
@@ -72,15 +57,11 @@ public class SinistrosController(
 
     [HttpPatch("{id:int}/status")]
     public async Task<IActionResult> UpdateStatus(
-        int id,
-        [FromBody] UpdateStatusSinistroDTO request)
+        [FromRoute] int id,
+        [FromBody] UpdateSinistroStatusRequest request, CancellationToken cancellationToken)
     {
-        await _updateSinistroStatusUseCase.ExecuteAsync(
-            id,
-            request.Status,
-            request.MotivoNegativa,
-            request.ValorAprovado);
-
+        var command = new UpdateSinistroStatusCommand(id, request.Status, request.ValorAprovado, request.MotivoRecusa);
+        await sender.Send(request, cancellationToken);
         return NoContent();
     }
 }

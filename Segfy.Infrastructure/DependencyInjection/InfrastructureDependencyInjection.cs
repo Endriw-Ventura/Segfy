@@ -2,8 +2,8 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Segfy.Application.Interfaces;
-using Segfy.Application.Interfaces.Apolice;
-using Segfy.Application.Interfaces.Sinistro;
+using Segfy.Application.Interfaces.Apolices;
+using Segfy.Application.Interfaces.Sinistros;
 using Segfy.Infrastructure.Persistence;
 using Segfy.Infrastructure.Persistence.Context;
 using Segfy.Infrastructure.Persistence.Repositories;

@@ -1,10 +1,5 @@
 ﻿using Segfy.Application.Interfaces;
 using Segfy.Infrastructure.Persistence.Context;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Segfy.Infrastructure.Persistence
 {
@@ -12,9 +7,9 @@ namespace Segfy.Infrastructure.Persistence
     {
         private readonly AppDBContext _context = context;
 
-        public async Task<int> SaveChangesAsync()
+        public async Task<int> SaveChangesAsync(CancellationToken cancellationToken)
         {
-            return await _context.SaveChangesAsync();
+            return await _context.SaveChangesAsync(cancellationToken);
         }
     }
 }
